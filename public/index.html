@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Contador de Donaciones TikTok Live</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>🎫 TikTok Live Donation Counter</h1>
+            <p class="subtitle">Panel de Control & Simulación para Streamers</p>
+        </header>
+
+
+        <main class="grid-layout">
+            <section class="card connection-card">
+                <h2>Conexión a TikTok</h2>
+                <div class="input-group">
+                    <span class="prefix">@</span>
+                    <input type="text" id="usernameInput" placeholder="tu_usuario_de_tiktok">
+                    <button id="connectBtn" class="btn btn-primary">Conectar</button>
+                    <button id="disconnectBtn" class="btn btn-danger hidden">Desconectar</button>
+                </div>
+                <div id="statusBadge" class="badge status-disconnected">Desconectado</div>
+                <p id="statusMsg" class="status-msg"></p>
+            </section>
+
+            <section class="card goal-card">
+                <h2>Configuración de Meta</h2>
+                <div class="goal-display">
+                    <div class="stat-box">
+                        <span class="label">Monedas Acumuladas</span>
+                        <span id="currentCoins" class="stat-val highlight">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="label">Meta Actual</span>
+                        <span id="currentGoal" class="stat-val">1000</span>
+                    </div>
+                </div>
+
+
+                <div class="input-group">
+                    <input type="number" id="goalInput" placeholder="Nueva Meta (ej: 2000)" min="1">
+                    <button id="setGoalBtn" class="btn btn-secondary">Actualizar Meta</button>
+                </div>
+
+                <button id="resetCounterBtn" class="btn btn-warning">Resetear Contador a 0</button>
+            </section>
+
+
+            <section class="card obs-card">
+                <h2>Enlace de Overlay para OBS Studio</h2>
+                <p class="hint">Copia esta URL y agrégala en OBS como fuente Browser Source:</p>
+                <div class="copy-box">
+                    <input type="text" id="obsUrlInput" readonly value="http://localhost:3000/overlay.html">
+                    <button id="copyUrlBtn" class="btn btn-accent">Copiar URL</button>
+                </div>
+            </section>
+
+
+            <section class="card simulation-card">
+                <h2>🤅 Simulador de Regalos (Pruebas)</h2>
+                <p class="hint">Usa estos botones para probar las animaciones del contador sin estar en vivo.</p>
+                <div class="sim-buttons">
+                    <button type="button" class="btn btn-sim" data-gift="Rosa" data-coins="1" onclick="window.simulateGift('Rosa', 1)">🍹 Rosa (+1)</button>
+                    <button type="button" class="btn btn-sim" data-gift="Finger Heart" data-coins="5" onclick="window.simulateGift('Finger Heart', 5)">🤫ǿ Corazón (+5)</button>
+                    <button type="button" class="btn btn-sim" data-gift="TikTok" data-coins="10" onclick="window.simulateGift('TikTok', 10)">🎫 TikTok (+10)</button>
+                    <button type="button" class="btn btn-sim" data-gift="Doughnut" data-coins="30" onclick="window.simulateGift('Doughnut', 30)">🍩 Dona (+30)</button>
+                    <button type="button" class="btn btn-sim" data-gift="Cap" data-coins="99" onclick="window.simulateGift('Cap', 99)">🣢 Gorra (+99)</button>
+                    <button type="button" class="btn btn-sim" data-gift="Perfume" data-coins="200" onclick="window.simulateGift('Perfume', 200)">🦴 Perfume (+200)</button>
+                    <button type="button" class="btn btn-sim" data-gift="Leon" data-coins="1000" onclick="window.simulateGift('Leon', 1000)">🍠 León (+1000)</button>
+                </div>
+            </section>
+
+
+            <section class="card history-card full-width">
+                <h2>ÚZltimas Donaciones Recibidas</h2>
+                <ul id="giftsLog" class="gifts-log">
+                    <li class="empty">No hay donaciones recibidas aún.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

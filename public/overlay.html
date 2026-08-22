@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Donation Overlay - OBS</title>
+    <link rel="stylesheet" href="css/overlay.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="overlay-container" class="overlay-container">
+        <!-- Goal Bar Container -->
+        <div class="goal-box">
+            <div class="goal-header">
+                <span class="goal-title">META DE DONACIONES</span>
+                <span class="goal-values">
+                    <span id="coins-val">0</span> / <span id="goal-val">1000</span> 🎍
+                </span>
+            </div>
+            
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+                <span id="progress-percent" class="progress-text">0%</span>
+            </div>
+        </div>
+
+        <!-- Notification Pop-up for incoming gifts -->
+        <div id="gift-popup" class="gift-popup hidden">
+            <div class="gift-popup-icon">🎱</div>
+            <div class="gift-popup-content">
+                <div class="donor-name" id="popup-donor">Usuario</div>
+                <div class="gift-details">
+                    envió <span id="popup-count">1</span>x <span id="popup-gift">Rosa</span> (+<span id="popup-coins">10</span> 🎍)
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/overlay.js"></script>
+</body>
+</html>
