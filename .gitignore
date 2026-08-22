@@ -2,3 +2,6 @@ node_modules/
 *.log
 test_*.js
 build_*.js
+*.b64
+fix*.js
+create_js.js

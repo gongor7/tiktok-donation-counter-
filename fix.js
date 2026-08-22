@@ -1,1 +1,0 @@
-const fs = require('fs'); let code = fs.readFileSync('public/js/dashboard.js', 'utf8'); code = code.replace('count count =', 'const count ='); fs.writeFileSync('public/js/dashboard.js', code);
