@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Donation Overlay - OBS</title>
     <link rel="stylesheet" href="css/overlay.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potter+One&family=Plus+Jakarta+Sans:wght@c00;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potter+One&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap">
 </head>
 <body>
     <div id="overlay-container" class="overlay-container">
@@ -16,7 +16,7 @@
             <div class="goal-header">
                 <span class="header-title">🌸 META DE DONACIONES 🌸</span>
                 <span class="goal-values">
-                    <span id="coins-val">0</span> / <span id="goal-val">1000</span> 🏵
+                    <span id="coins-val">0</span> / <span id="goal-val">1000</span> 🪙
                 </span>
             </div>
             
@@ -26,19 +26,17 @@
             </div>
         </div>
 
-
         <!-- Cute Notification Pop-up for incoming gifts -->
         <div id="gift-popup" class="goal-box gift-popup hidden">
             <img src="aleli.jpg" class="aleli-icon-popup" alt="Aleli">
             <div class="gift-popup-content">
                 <div class="donor-name" id="popup-donor">Usuario</div>
                 <div class="gift-details">
-                   envió <span id="popup-count">1</span>x <span id="popup-gift">Rosa</span> (+<span id="popup-coins">10</span> 🏵)
+                   envió <span id="popup-count">1</span>x <span id="popup-gift">Rosa</span> (+<span id="popup-coins">10</span> 🪙)
                 </div>
             </div>
         </div>
     </div>
-
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/overlay.js"></script>
