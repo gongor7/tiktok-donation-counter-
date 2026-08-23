@@ -59,6 +59,61 @@ function playCuteChime() {
     }
 }
 
+// Text-To-Speech (Voz Alta TTS)
+let availableVoices = [];
+
+function loadVoices() {
+    if ('speechSynthesis' in window) {
+        availableVoices = window.speechSynthesis.getVoices();
+    }
+}
+
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function speakText(text) {
+    if (!('speechSynthesis' in window) || !text) return;
+    try {
+        window.speechSynthesis.cancel(); // Cancelar lecturas anteriores para evitar retrasos
+
+        // Limpiar emojis y símbolos raros para que la voz suene limpia y natural
+        const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
+        if (!cleanText) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.0;   // Velocidad natural
+        utterance.pitch = 1.15; // Tono alegre y dulce
+
+        if (!availableVoices || availableVoices.length === 0) {
+            loadVoices();
+        }
+
+        // Buscar una voz femenina / dulce en español si está disponible
+        const spanishVoice = availableVoices.find(v => v.lang.startsWith('es') && (
+            v.name.includes('Female') || 
+            v.name.includes('Sabina') || 
+            v.name.includes('Helena') || 
+            v.name.includes('Laura') || 
+            v.name.includes('Paulina') || 
+            v.name.includes('Monica') || 
+            v.name.includes('Sofia') || 
+            v.name.includes('Google') ||
+            v.name.includes('Microsoft')
+        )) || availableVoices.find(v => v.lang.startsWith('es'));
+
+        if (spanishVoice) {
+            utterance.voice = spanishVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+    } catch (e) {
+        console.warn('TTS error:', e);
+    }
+}
+
 // Particle explosion
 function spawnPetals() {
     if (!particlesContainer) return;
@@ -152,14 +207,23 @@ function updateGoalUI(coins, goal, shouldBump) {
 function showSuperBigAlert(gift) {
     if (!bigGiftAlert) return;
 
-    if (alertDonor) alertDonor.textContent = gift.nickname || gift.uniqueId || 'Donador';
-    if (alertGift) alertGift.textContent = gift.giftName || 'Regalo';
-    if (alertCount) alertCount.textContent = gift.giftCount || 1;
-    if (alertCoins) alertCoins.textContent = gift.coins || 1;
+    const donorName = gift.nickname || gift.uniqueId || 'Donador';
+    const giftName = gift.giftName || 'Regalo';
+    const giftCount = gift.giftCount || 1;
+    const coins = gift.coins || 1;
+
+    if (alertDonor) alertDonor.textContent = donorName;
+    if (alertGift) alertGift.textContent = giftName;
+    if (alertCount) alertCount.textContent = giftCount;
+    if (alertCoins) alertCoins.textContent = coins;
 
     // Trigger visual particles & audio chime
     spawnPetals();
     playCuteChime();
+
+    // Lectura en voz alta de donación
+    const giftVoice = '¡Muchas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!';
+    speakText(giftVoice);
 
     // Show alert
     bigGiftAlert.classList.remove('hidden');
@@ -168,18 +232,23 @@ function showSuperBigAlert(gift) {
 
     alertTimeout = setTimeout(function() {
         bigGiftAlert.classList.add('hidden');
-    }, 6000);
+    }, 6500);
 }
 
 function showKeywordAlert(data) {
     if (!keywordAlert) return;
 
+    const user = data.nickname || data.uniqueId || 'Amigo';
     if (keywordTag) keywordTag.textContent = data.tag || '🌸 ¡HOLA! 🌸';
-    if (keywordTitle) keywordTitle.textContent = data.title || ('¡Hola ' + (data.nickname || 'Amigo') + '! 🌸🐰💖');
+    if (keywordTitle) keywordTitle.textContent = data.title || ('¡Hola ' + user + '! 🌸🐰💖');
     if (keywordMsg) keywordMsg.textContent = data.message || '¡Gracias por participar en el en vivo! ✨';
 
     spawnPetals();
     playCuteChime();
+
+    // LEER EN VOZ ALTA (TTS)
+    const voiceMsg = data.voiceText || ('¡Hola ' + user + '! Alelí te manda un abrazo gigante.');
+    speakText(voiceMsg);
 
     keywordAlert.classList.remove('hidden');
 
@@ -187,5 +256,5 @@ function showKeywordAlert(data) {
 
     keywordTimeout = setTimeout(function() {
         keywordAlert.classList.add('hidden');
-    }, 5500);
+    }, 6000);
 }
