@@ -28,6 +28,7 @@ let currentUsername = 'aleli_paz';
 let currentGoal = 1000;
 let currentCoins = 0;
 let recentGifts = [];
+let recentChats = [];
 
 io.on('connection', (socket) => {
     console.log('⚡ Nuevo cliente WebSocket conectado:', socket.id);
@@ -37,7 +38,8 @@ io.on('connection', (socket) => {
         username: currentUsername,
         goal: currentGoal,
         coins: currentCoins,
-        recentGifts: recentGifts
+        recentGifts: recentGifts,
+        recentChats: recentChats
     });
 
     socket.on('connectTikTok', (data) => {
@@ -124,6 +126,39 @@ io.on('connection', (socket) => {
             });
         });
 
+        // Capturar comentarios del chat en vivo
+        tiktokConnection.on('chat', data => {
+            const comment = data.comment || data.content || '';
+            const nick = (data.user && data.user.nickname) || data.nickname || data.uniqueId || 'Usuario';
+            const handle = (data.user && (data.user.displayId || data.user.uniqueId)) || data.uniqueId || nick;
+
+            const chatObj = {
+                id: Date.now(),
+                nickname: nick,
+                uniqueId: handle,
+                comment: comment,
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            recentChats.unshift(chatObj);
+            if (recentChats.length > 30) recentChats.pop();
+
+            console.log('💬 [CHAT LIVE]:', nick, '(@' + handle + '):', comment);
+            io.emit('chatMessage', chatObj);
+
+            // Trigger especial cuando mencionan a "Alelí"
+            const lower = comment.toLowerCase();
+            if (lower.includes('aleli') || lower.includes('alelí')) {
+                console.log('🌸 [TRIGGER ALELÍ DETECTADO]:', nick, 'dijo:', comment);
+                io.emit('keywordAlert', {
+                    nickname: nick,
+                    uniqueId: handle,
+                    comment: comment,
+                    timestamp: chatObj.timestamp
+                });
+            }
+        });
+
         tiktokConnection.on('streamEnd', () => {
             console.log('⚠️ La transmisión de TikTok Live finalizó.');
             io.emit('connectionStatus', {
@@ -202,6 +237,34 @@ io.on('connection', (socket) => {
             gift: fakeGift,
             totalCoins: currentCoins,
             goal: currentGoal
+        });
+    });
+
+    socket.on('simulateComment', (data) => {
+        const comment = data.comment || '¡Hola Alelí!';
+        const nick = data.nickname || 'Seguidor Fan';
+        const handle = data.uniqueId || 'fan_aleli';
+
+        const chatObj = {
+            id: Date.now(),
+            nickname: nick,
+            uniqueId: handle,
+            comment: comment,
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        recentChats.unshift(chatObj);
+        if (recentChats.length > 30) recentChats.pop();
+
+        console.log('🧪 [SIMULACION CHAT]:', nick, ':', comment);
+        io.emit('chatMessage', chatObj);
+
+        // Trigger Alelí alert
+        io.emit('keywordAlert', {
+            nickname: nick,
+            uniqueId: handle,
+            comment: comment,
+            timestamp: chatObj.timestamp
         });
     });
 });

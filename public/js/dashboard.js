@@ -14,6 +14,7 @@ const resetCounterBtn = document.getElementById('resetCounterBtn');
 const copyUrlBtn = document.getElementById('copyUrlBtn');
 const obsUrlInput = document.getElementById('obsUrlInput');
 const giftsLog = document.getElementById('giftsLog');
+const chatLog = document.getElementById('chatLog');
 
 window.simulateGift = function(giftName, coins, count) {
     count = count || 1;
@@ -27,6 +28,16 @@ window.simulateGift = function(giftName, coins, count) {
     });
 };
 
+window.simulateComment = function(commentText) {
+    commentText = commentText || '¡Hola Alelí!';
+    console.log('[Dashboard] Simulando comentario:', commentText);
+    socket.emit('simulateComment', {
+        comment: commentText,
+        nickname: 'Seguidor Fan',
+        uniqueId: 'fan_aleli'
+    });
+};
+
 socket.on('stateUpdate', function(state) {
     if (currentCoinsEl) currentCoinsEl.textContent = state.coins;
     if (currentGoalEl) currentGoalEl.textContent = state.goal;
@@ -34,6 +45,9 @@ socket.on('stateUpdate', function(state) {
     updateStatusBadge(state.connected, state.username);
     if (state.recentGifts && state.recentGifts.length > 0) {
         renderGiftsLog(state.recentGifts);
+    }
+    if (state.recentChats && state.recentChats.length > 0) {
+        renderChatLog(state.recentChats);
     }
 });
 
@@ -109,6 +123,10 @@ socket.on('giftReceived', function(data) {
     addGiftToLog(data.gift);
 });
 
+socket.on('chatMessage', function(chat) {
+    addChatToLog(chat);
+});
+
 function addGiftToLog(gift) {
     if (!giftsLog) return;
     const emptyMsg = giftsLog.querySelector('.empty');
@@ -124,6 +142,32 @@ function renderGiftsLog(gifts) {
     if (!giftsLog) return;
     giftsLog.innerHTML = '';
     gifts.forEach(function(gift) { addGiftToLog(gift); });
+}
+
+function addChatToLog(chat) {
+    if (!chatLog) return;
+    const emptyMsg = chatLog.querySelector('.empty');
+    if (emptyMsg) emptyMsg.remove();
+
+    const li = document.createElement('li');
+    li.innerHTML = '<div class="chat-user-header">' +
+        '<span class="chat-user-name">' + escapeHtml(chat.nickname) + '</span>' +
+        '<span class="chat-user-handle">(@' + escapeHtml(chat.uniqueId) + ')</span>' +
+        '<small style="color: #94a3b8; margin-left: auto;">' + chat.timestamp + '</small>' +
+        '</div>' +
+        '<div class="chat-text">' + escapeHtml(chat.comment) + '</div>';
+    chatLog.insertBefore(li, chatLog.firstChild);
+
+    // Limit chat history to 30 items
+    while (chatLog.children.length > 30) {
+        chatLog.removeChild(chatLog.lastChild);
+    }
+}
+
+function renderChatLog(chats) {
+    if (!chatLog) return;
+    chatLog.innerHTML = '';
+    chats.forEach(function(chat) { addChatToLog(chat); });
 }
 
 function escapeHtml(str) {

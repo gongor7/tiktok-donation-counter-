@@ -1,110 +1,122 @@
-﻿<!DOCTYPE html>
-<html lang=es>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset=UTF-8>
-    <meta name=viewport content=width=device-width, initial-scale=1.0>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Contador de Donaciones TikTok Live</title>
-    <link rel=stylesheet href=css/dashboard.css>
-    <link href=https://fonts.googleapis.com/css2?family=Potter+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap rel=stylesheet>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Potter+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class=dashboard-container>
+    <div class="dashboard-container">
         <header>
-            <div class=header-badge>✨ Streamer Dashboard ✨</div>
+            <div class="header-badge">✨ Streamer Dashboard ✨</div>
             <h1>🌸 TikTok Live Counter 🌸</h1>
-            <p class=subtitle>Panel de control tierno & estético para tus directos 💖</p>
+            <p class="subtitle">Panel de control tierno & estético para tus directos 💖</p>
         </header>
 
-        <main class=grid-layout>
+        <main class="grid-layout">
             <!-- Tarjeta de Conexión -->
-            <section class=card connection-card>
-                <div class=card-header>
-                    <span class=card-icon>🔗</span>
+            <section class="card connection-card">
+                <div class="card-header">
+                    <span class="card-icon">🔗</span>
                     <h2>Conexión a TikTok</h2>
                 </div>
-                <p class=card-desc>Ingresa tu usuario de TikTok para vincular el directo:</p>
-                <div class=input-group>
-                    <span class=prefix>@</span>
-                    <input type=text id=usernameInput placeholder=tu_usuario>
-                    <button id=connectBtn class=btn btn-pink>Conectar</button>
-                    <button id=disconnectBtn class=btn btn-danger hidden>Desconectar</button>
+                <p class="card-desc">Ingresa tu usuario de TikTok para vincular el directo:</p>
+                <div class="input-group">
+                    <span class="prefix">@</span>
+                    <input type="text" id="usernameInput" placeholder="tu_usuario">
+                    <button id="connectBtn" class="btn btn-pink">Conectar</button>
+                    <button id="disconnectBtn" class="btn btn-danger hidden">Desconectar</button>
                 </div>
-                <div class=status-wrapper>
-                    <div id=statusBadge class=badge status-disconnected>⚪ Desconectado</div>
+                <div class="status-wrapper">
+                    <div id="statusBadge" class="badge status-disconnected">⚪ Desconectado</div>
                 </div>
-                <p id=statusMsg class=status-msg></p>
+                <p id="statusMsg" class="status-msg"></p>
             </section>
 
             <!-- Tarjeta de Meta -->
-            <section class=card goal-card>
-                <div class=card-header>
-                    <span class=card-icon>🎯</span>
+            <section class="card goal-card">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
                     <h2>Meta de Donaciones</h2>
                 </div>
-                <div class=goal-display>
-                    <div class=stat-box>
-                        <span class=label>Monedas Acumuladas</span>
-                        <span id=currentCoins class=stat-val highlight>0</span>
+                <div class="goal-display">
+                    <div class="stat-box">
+                        <span class="label">Monedas Acumuladas</span>
+                        <span id="currentCoins" class="stat-val highlight">0</span>
                     </div>
-                    <div class=stat-box>
-                        <span class=label>Meta Actual</span>
-                        <span id=currentGoal class=stat-val>1000</span>
+                    <div class="stat-box">
+                        <span class="label">Meta Actual</span>
+                        <span id="currentGoal" class="stat-val">1000</span>
                     </div>
                 </div>
 
-                <div class=input-group>
-                    <input type=number id=goalInput placeholder=Nueva Meta (ej: 2000) min=1>
-                    <button id=setGoalBtn class=btn btn-soft>Guardar Meta</button>
+                <div class="input-group">
+                    <input type="number" id="goalInput" placeholder="Nueva Meta (ej: 2000)" min="1">
+                    <button id="setGoalBtn" class="btn btn-soft">Guardar Meta</button>
                 </div>
 
-                <button id=resetCounterBtn class=btn btn-warning>🔄 Resetear Contador a 0</button>
+                <button id="resetCounterBtn" class="btn btn-warning">🔄 Resetear Contador a 0</button>
             </section>
 
             <!-- Tarjeta OBS URL -->
-            <section class=card obs-card>
-                <div class=card-header>
-                    <span class=card-icon>🎥</span>
+            <section class="card obs-card">
+                <div class="card-header">
+                    <span class="card-icon">🎥</span>
                     <h2>Enlace para OBS Studio</h2>
                 </div>
-                <p class=hint>Agrega este enlace en OBS como fuente <strong>Navegador (Browser Source)</strong>:</p>
-                <div class=copy-box>
-                    <input type=text id=obsUrlInput readonly value=http://localhost:3000/overlay.html>
-                    <button id=copyUrlBtn class=btn btn-copy>📋 Copiar</button>
+                <p class="hint">Agrega este enlace en OBS como fuente <strong>Navegador (Browser Source)</strong>:</p>
+                <div class="copy-box">
+                    <input type="text" id="obsUrlInput" readonly value="http://localhost:3000/overlay.html">
+                    <button id="copyUrlBtn" class="btn btn-copy">📋 Copiar</button>
                 </div>
             </section>
 
-            <!-- Tarjeta Simulador de Regalos -->
-            <section class=card simulation-card>
-                <div class=card-header>
-                    <span class=card-icon>🎁</span>
-                    <h2>Simulador de Regalos</h2>
+            <!-- Tarjeta Simulador de Regalos & Comentarios -->
+            <section class="card simulation-card">
+                <div class="card-header">
+                    <span class="card-icon">🎁</span>
+                    <h2>Simulador de Eventos</h2>
                 </div>
-                <p class=hint>Haz clic en un regalo para sumar monedas y probar las animaciones en pantalla:</p>
-                <div class=sim-buttons>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Rosa', 1)>🌹 Rosa (+1)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Finger Heart', 5)>🫰 Corazón (+5)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('TikTok', 10)>🎵 TikTok (+10)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Doughnut', 30)>🍩 Dona (+30)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Cap', 99)>🧢 Gorra (+99)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Perfume', 200)>🧴 Perfume (+200)</button>
-                    <button type=button class=btn btn-sim onclick=simulateGift('Leon', 1000)>🦁 León (+1000)</button>
+                <p class="hint">Haz clic en un regalo o comentario para probar las alertas en pantalla:</p>
+                <div class="sim-buttons">
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Rosa', 1)">🌹 Rosa (+1)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Finger Heart', 5)">🫰 Corazón (+5)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('TikTok', 10)">🎵 TikTok (+10)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Doughnut', 30)">🍩 Dona (+30)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Cap', 99)">🧢 Gorra (+99)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Perfume', 200)">🧴 Perfume (+200)</button>
+                    <button type="button" class="btn btn-sim" onclick="simulateGift('Leon', 1000)">🦁 León (+1000)</button>
+                    <button type="button" class="btn btn-sim btn-sim-aleli" onclick="simulateComment('¡Hola Alelí hermosa!')">🌸 Probar "Alelí"</button>
                 </div>
+            </section>
+
+            <!-- Chat en Vivo -->
+            <section class="card chat-card">
+                <div class="card-header">
+                    <span class="card-icon">💬</span>
+                    <h2>Chat en Vivo</h2>
+                </div>
+                <ul id="chatLog" class="chat-log">
+                    <li class="empty">Los comentarios del directo aparecerán aquí en vivo 💬</li>
+                </ul>
             </section>
 
             <!-- Historial de Donaciones -->
-            <section class=card history-card full-width>
-                <div class=card-header>
-                    <span class=card-icon>📜</span>
-                    <h2>Historial de Donaciones</h2>
+            <section class="card history-card">
+                <div class="card-header">
+                    <span class="card-icon">📜</span>
+                    <h2>Últimas Donaciones</h2>
                 </div>
-                <ul id=giftsLog class=gifts-log>
-                    <li class=empty>Aún no se han recibido regalos en esta sesión 🌸</li>
+                <ul id="giftsLog" class="gifts-log">
+                    <li class="empty">Aún no se han recibido regalos en esta sesión 🌸</li>
                 </ul>
             </section>
         </main>
     </div>
 
-    <script src=/socket.io/socket.io.js></script>
-    <script src=js/dashboard.js></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

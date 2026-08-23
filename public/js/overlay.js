@@ -15,7 +15,13 @@ const alertCount = document.getElementById('alert-count');
 const alertCoins = document.getElementById('alert-coins');
 const alertImg = document.getElementById('alert-img');
 
+// Keyword Alert Elements
+const keywordAlert = document.getElementById('keyword-alert');
+const keywordUser = document.getElementById('keyword-user');
+const keywordComment = document.getElementById('keyword-comment');
+
 let alertTimeout = null;
+let keywordTimeout = null;
 
 // Web Audio API Chime Synthesizer for OBS
 let audioCtx = null;
@@ -98,6 +104,11 @@ socket.on('giftReceived', function(data) {
     }
 });
 
+socket.on('keywordAlert', function(data) {
+    console.log('🌸 Overlay keywordAlert recibido:', data);
+    showKeywordAlert(data);
+});
+
 function updateGoalUI(coins, goal, shouldBump) {
     coins = parseInt(coins, 10) || 0;
     goal = parseInt(goal, 10) || 1000;
@@ -157,4 +168,22 @@ function showSuperBigAlert(gift) {
     alertTimeout = setTimeout(function() {
         bigGiftAlert.classList.add('hidden');
     }, 6000);
+}
+
+function showKeywordAlert(data) {
+    if (!keywordAlert) return;
+
+    if (keywordUser) keywordUser.textContent = data.nickname || data.uniqueId || 'Usuario';
+    if (keywordComment) keywordComment.textContent = '\"' + (data.comment || 'Aleli') + '\"';
+
+    spawnPetals();
+    playCuteChime();
+
+    keywordAlert.classList.remove('hidden');
+
+    if (keywordTimeout) clearTimeout(keywordTimeout);
+
+    keywordTimeout = setTimeout(function() {
+        keywordAlert.classList.add('hidden');
+    }, 5000);
 }
