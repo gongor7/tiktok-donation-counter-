@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Donation Overlay - OBS</title>
     <link rel="stylesheet" href="css/overlay.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@c00;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potter+One&family=Plus+Jakarta+Sans:wght@c00;800;900&display=swap">
 </head>
 <body>
     <div id="overlay-container" class="overlay-container">
-        <!-- Goal Cute Pink Box with Aleli & Bunny -->
-        <div class="goal-box">
-            <img src="aleli.jpg" class="aleli-flower-left" alt="Aleli">
-            <img src="bunny.jpg" class="bunny-character-right" alt="Conejita">
-            <div class="goal-header">
-                <span class="goal-title">META DE DONACIONES</span>
+        <!-- Cute Character Overlay Card -->
+        <div class="coal-box">
+            <div class="header-flex">
+                <div class="title-group">
+                    <span class="goal-title">🍹 META DE DONACIONES</span>
+                </div>
                 <span class="goal-values">
                     <span id="coins-val">0</span> / <span id="goal-val">1000</span> 🏵
                 </span>
@@ -24,12 +24,13 @@
                 <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
                 <span id="progress-percent" class="progress-text">0%</span>
             </div>
+            <img src="cute_bunny.jpg" class="bunny-fantasy-mascot" alt="Conejita">
         </div>
 
 
         <!-- Cute Notification Pop-up for incoming gifts -->
-        <div id="gift-popup" class="goal-box gift-popup hidden">
-            <img src="bunny.jpg" class="aleli-icon-popup" alt="Conejita">
+        <div id="gift-popup" class="gift-popup hidden">
+            <img src="cute_bunny.jpg" class="popup-mascot" alt="Conejita">
             <div class="gift-popup-content">
                 <div class="donor-name" id="popup-donor">Usuario</div>
                 <div class="gift-details">
