@@ -17,6 +17,8 @@ let currentCoins = 0;
 let recentGifts = [];
 
 io.on('connection', (socket) => {
+    console.log('Nuevo cliente WebSocket conectado:', socket.id);
+
     socket.emit('stateUpdate', {
         connected: !!tiktokConnection && tiktokConnection.isConnected,
         username: currentUsername,
@@ -26,7 +28,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('connectTikTok', (username) => {
-        if (!husername || username.trim() === '') return;
+        if (!username || username.trim() === '') return;
 
         username = username.trim().replace('@', '');
         currentUsername = username;
@@ -35,10 +37,12 @@ io.on('connection', (socket) => {
             try { tiktokConnection.disconnect(); } catch (e) {}
         }
 
+        console.log('Intentando conectar a la transmision LIVE de @' + username + '...');
         tiktokConnection = new WebcastPushConnection(username);
 
         tiktokConnection.connect()
             .then(state => {
+                console.log('CONECTADO CON EXITO A TIKTOK LIVE DE @' + username + '! RoomId: ' + state.roomId);
                 io.emit('connectionStatus', {
                     connected: true,
                     username: username,
@@ -46,10 +50,11 @@ io.on('connection', (socket) => {
                 });
             })
             .catch(err => {
+                console.error('Error al conectar a TikTok Live:', err.message || err);
                 io.emit('connectionStatus', {
                     connected: false,
                     username: username,
-                    error: err.message || 'No se pudo conectar a la transmision'
+                    error: err.message || 'No se pudo conectar. Verifica que el usuario este transmitiendo EN VIVO en TikTok.'
                 });
             });
 
@@ -64,10 +69,10 @@ io.on('connection', (socket) => {
             const giftInfo = {
                 id: Date.now(),
                 uniqueId: data.uniqueId,
-                nickname: data.nickname,
-                profilePictureUrl: data.profilePictureUrl,
-                giftName: data.giftName,
-                giftIcon: data.giftPictureUrl,
+                nickname: data.nickname || data.uniqueId,
+                profilePictureUrl: data.profilePictureUrl || '',
+                giftName: data.giftName || 'Regalo',
+                giftIcon: data.giftPictureUrl || '',
                 giftCount: giftCount,
                 coins: coinValue,
                 timestamp: new Date().toLocaleTimeString()
@@ -75,6 +80,8 @@ io.on('connection', (socket) => {
 
             recentGifts.unshift(giftInfo);
             if (recentGifts.length > 20) recentGifts.pop();
+
+            console.log('[TIKTOK LIVE REGALO RECIBIDO]:', giftInfo.nickname, 'envio', giftCount + 'x', giftInfo.giftName, '(+', coinValue, 'monedas). Total:', currentCoins);
 
             io.emit('giftReceived', {
                 gift: giftInfo,
@@ -84,6 +91,7 @@ io.on('connection', (socket) => {
         });
 
         tiktokConnection.on('streamEnd', () => {
+            console.log('La transmision de TikTok Live finalizo.');
             io.emit('connectionStatus', {
                 connected: false,
                 username: username,
@@ -92,6 +100,7 @@ io.on('connection', (socket) => {
         });
 
         tiktokConnection.on('disconnected', () => {
+            console.log('Desconectado de TikTok Live.');
             io.emit('connectionStatus', {
                 connected: false,
                 username: username,
@@ -99,7 +108,9 @@ io.on('connection', (socket) => {
             });
         });
 
-        tiktokConnection.on('error', err => {});
+        tiktokConnection.on('error', err => {
+            console.error('Advertencia en TikTok connection:', err.message || err);
+        });
     });
 
     socket.on('disconnectTikTok', () => {
@@ -107,17 +118,19 @@ io.on('connection', (socket) => {
             try { tiktokConnection.disconnect(); } catch (e) {}
             tiktokConnection = null;
         }
+        console.log('Desconectado manualmente por el usuario.');
         io.emit('connectionStatus', {
             connected: false,
             username: currentUsername,
             message: 'Desconectado por el usuario.'
         });
-     });
+    });
 
     socket.on('updateGoal', (newGoal) => {
         const parsed = parseInt(newGoal, 10);
         if (!isNaN(parsed) && parsed > 0) {
             currentGoal = parsed;
+            console.log('Nueva meta establecida:', currentGoal);
             io.emit('goalUpdated', { goal: currentGoal, coins: currentCoins });
         }
     });
@@ -125,6 +138,7 @@ io.on('connection', (socket) => {
     socket.on('resetCounter', () => {
         currentCoins = 0;
         recentGifts = [];
+        console.log('Contador reseteado a 0.');
         io.emit('counterReset', { coins: currentCoins, goal: currentGoal });
     });
 
@@ -148,6 +162,8 @@ io.on('connection', (socket) => {
         recentGifts.unshift(fakeGift);
         if (recentGifts.length > 20) recentGifts.pop();
 
+        console.log('[SIMULACION REGALO]:', fakeGift.giftName, '(+', coinValue, 'monedas). Total:', currentCoins);
+
         io.emit('giftReceived', {
             gift: fakeGift,
             totalCoins: currentCoins,
@@ -157,5 +173,9 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('Servidor iniciado y escuchando en http://0.0.0.0:' + PORT);
+    console.log('==================================================');
+    console.log('Servidor iniciado en http://localhost:' + PORT);
+    console.log('Dashboard de Control: http://localhost:' + PORT);
+    console.log('Overlay para OBS: http://localhost:' + PORT + '/overlay.html');
+    console.log('==================================================');
 });
