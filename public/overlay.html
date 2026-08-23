@@ -9,6 +9,9 @@
 </head>
 <body>
     <div id="overlay-container" class="overlay-container">
+        <!-- Floating Particle / Petal Container -->
+        <div id="particles-container" class="particles-container"></div>
+
         <!-- Goal Cute Pink Box with Aleli Flowers -->
         <div class="goal-box">
             <img src="aleli.jpg" class="aleli-flower-left" alt="Aleli">
@@ -16,7 +19,7 @@
             <div class="goal-header">
                 <span class="header-title">🌸 META DE DONACIONES 🌸</span>
                 <span class="goal-values">
-                    <span id="coins-val">0</span> / <span id="goal-val">1000</span> 🪙
+                    <span id="coins-val" class="coins-number">0</span> / <span id="goal-val">1000</span> 🪙
                 </span>
             </div>
             
@@ -26,13 +29,27 @@
             </div>
         </div>
 
-        <!-- Cute Notification Pop-up for incoming gifts -->
-        <div id="gift-popup" class="goal-box gift-popup hidden">
-            <img src="aleli.jpg" class="aleli-icon-popup" alt="Aleli">
-            <div class="gift-popup-content">
-                <div class="donor-name" id="popup-donor">Usuario</div>
-                <div class="gift-details">
-                   envió <span id="popup-count">1</span>x <span id="popup-gift">Rosa</span> (+<span id="popup-coins">10</span> 🪙)
+        <!-- GIGANTIC SUPER ALERT MODAL FOR DONATIONS -->
+        <div id="big-gift-alert" class="big-gift-alert hidden">
+            <div class="alert-card">
+                <div class="alert-sparkles">✨🌸💖🌸✨</div>
+                
+                <div class="alert-body">
+                    <div class="alert-avatar-box">
+                        <img id="alert-img" src="aleli.jpg" class="alert-flower-img" alt="Aleli">
+                    </div>
+                    
+                    <div class="alert-info">
+                        <div class="alert-tag">¡NUEVA DONACIÓN EN VIVO! 💖</div>
+                        <!-- NOMBRE GIGANTE DEL DONADOR -->
+                        <div id="alert-donor" class="alert-giant-donor">Leandro Góngora</div>
+                        <div class="alert-gift-row">
+                            envió <span id="alert-count" class="alert-count">1</span>x <span id="alert-gift" class="alert-gift-name">Rosa</span>
+                        </div>
+                        <div class="alert-coins-badge">
+                            +<span id="alert-coins">1</span> MONEDAS 🪙
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
