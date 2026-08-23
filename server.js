@@ -1,7 +1,20 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { TikTokLiveConnection } = require('tiktok-live-connector');
+const tlc = require('tiktok-live-connector');
+
+// Constructor universal compatible con cualquier versión de tiktok-live-connector (v1.x y v2.x)
+function getTikTokConnectionClass() {
+    if (typeof tlc.TikTokLiveConnection === 'function') return tlc.TikTokLiveConnection;
+    if (typeof tlc.WebcastPushConnection === 'function') return tlc.WebcastPushConnection;
+    if (typeof tlc === 'function') return tlc;
+    if (tlc.default) {
+        if (typeof tlc.default.TikTokLiveConnection === 'function') return tlc.default.TikTokLiveConnection;
+        if (typeof tlc.default.WebcastPushConnection === 'function') return tlc.default.WebcastPushConnection;
+        if (typeof tlc.default === 'function') return tlc.default;
+    }
+    throw new Error('No se encontró el constructor de TikTok Live en la librería.');
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -42,20 +55,22 @@ io.on('connection', (socket) => {
         console.log('🔄 Conectando en directo a TikTok Live de @' + username + '...');
 
         try {
-            tiktokConnection = new TikTokLiveConnection(username, {});
+            const ConnectionClass = getTikTokConnectionClass();
+            tiktokConnection = new ConnectionClass(username, {});
         } catch (e) {
-            console.error('❌ Error al crear instancia TikTokLiveConnection:', e);
+            console.error('❌ Error al instanciar conexión de TikTok:', e);
             io.emit('connectionStatus', {
                 connected: false,
                 username: username,
-                error: e.message || 'Error al inicializar conexión.'
+                error: e.message || 'Error al inicializar la conexión.'
             });
             return;
         }
 
         tiktokConnection.connect()
             .then(state => {
-                console.log('✅ ¡CONECTADO CON ÉXITO A TIKTOK LIVE DE @' + username + '! (RoomId: ' + state.roomId + ')');
+                const rId = (state && state.roomId) || (tiktokConnection && tiktokConnection.roomId) || 'Activo';
+                console.log('✅ ¡CONECTADO CON ÉXITO A TIKTOK LIVE DE @' + username + '! (RoomId: ' + rId + ')');
                 io.emit('connectionStatus', {
                     connected: true,
                     username: username,
