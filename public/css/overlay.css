@@ -355,6 +355,25 @@ body {
     width: fit-content;
 }
 
+/* Audio Unlock Hint */
+.audio-unlock-hint {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid #ffcde2;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #885870;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.15);
+    animation: hintPulse 2s infinite alternate;
+}
+
+.audio-unlock-hint.hidden {
+    display: none;
+}
+
 /* Animations */
 @keyframes superAlertIn {
     0% {
@@ -368,12 +387,8 @@ body {
 }
 
 @keyframes donorNamePop {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.06);
-    }
+    0% { transform: scale(1); }
+    100% { transform: scale(1.06); }
 }
 
 @keyframes bounceAndWiggle {
@@ -400,5 +415,10 @@ body {
 
 @keyframes tagGlow {
     0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+@keyframes hintPulse {
+    0% { opacity: 0.7; }
     100% { opacity: 1; }
 }
