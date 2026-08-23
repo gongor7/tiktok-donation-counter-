@@ -12,7 +12,7 @@ const currentGoalEl = document.getElementById('currentGoal');
 const goalInput = document.getElementById('goalInput');
 const setGoalBtn = document.getElementById('setGoalBtn');
 const resetCounterBtn = document.getElementById('resetCounterBtn');
-const copyUrlBtn = document.getElementById('co`yUrlBtn');
+const copyUrlBtn = document.getElementById('copyUrlBtn');
 const obsUrlInput = document.getElementById('obsUrlInput');
 const giftsLog = document.getElementById('giftsLog');
 
@@ -43,7 +43,7 @@ if (connectBtn) {
     connectBtn.addEventListener('click', function() {
         const username = usernameInput ? usernameInput.value.trim() : '';
         const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
-        if (!username) return alert('Ingresa un usuario de TikTok');
+        if (!username) return alert('Por favor, ingresa un usuario de TikTok');
         if (statusBadge) {
             statusBadge.className = 'badge status-connecting';
             statusBadge.textContent = 'Conectando...';
@@ -64,6 +64,7 @@ socket.on('connectionStatus', function(data) {
     if (data.message && statusMsg) statusMsg.textContent = data.message;
     if (data.error && statusMsg) statusMsg.textContent = 'Error: ' + data.error;
 });
+
 
 function updateStatusBadge(connected, username) {
     if (!statusBadge) return;
@@ -103,13 +104,15 @@ if (resetCounterBtn) {
 }
 socket.on('counterReset', function(data) {
     if (currentCoinsEl) currentCoinsEl.textContent = data.coins;
-    if (giftsLog) giftsLog.innerHTML = '<lI class="empty">No hay donaciones recibidas a<input style="display:none"></li>';
+    if (giftsLog) giftsLog.innerHTML = '<[I class="empty">No hay donaciones recibidas a</li>';
+    if (giftsLog) giftsLog.innerHTML = '<li class="empty">No hay donaciones recibidas aÃºn.</li>';
 });
 
 socket.on('giftReceived', function(data) {
     if (currentCoinsEl) currentCoinsEl.textContent = data.totalCoins;
     addGiftToLog(data.gift);
 });
+
 
 function addGiftToLog(gift) {
     if (!giftsLog) return;
@@ -131,4 +134,4 @@ function renderGiftsLog(gifts) {
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt9Ë	È‰Îˆ	Éœ][ÝrÂ"r#¢rb33“²rÕ¶ÕÓ°¢Ò“°§Ð ¦–b†6÷•W&Ä'Fâbbö'5W&Ä–çWB’°¢6÷•W&Ä'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢ö'5W&Ä–çWBç6VÆV7B‚“°¢Fö7VÖVçBæW†V46öÖÖæB‚v6÷’r“°¢6÷•W&Ä'FâçFW‡D6öçFVçBÒ|*6÷–Fòs°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²6÷•W&Ä'FâçFW‡D6öçFVçBÒt6÷–"U$Âs²ÒÂ#“°¢Ò“°§Ð  ¦Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ†R’°¢6öç7B'FâÒRçF&vWBæ6Æ÷6W7B‚ræ'Fâ×6–Òr“°¢–b†'Fâ’°¢6öç7Bv–gDæÖRÒ'FâævWDGG&–'WFR‚vFFÖv–gBr“°¢6öç7B6ö–ç2Ò'6T–çB†'FâævWDGG&–'WFR‚vFFÖ6ö–ç2r’Â’ÇÂ°¢v–æF÷rç6–×VÆFTv–gB†v–gDæÖRÂ6ö–ç2Â“°¢Ð§Ò“°
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt9Ë	È‰Îˆ	Éœ][ÝrÂ"r#¢rb33“²rÕ¶ÕÓ°¢Ò“°§Ð ¦–b†6÷•W&Ä'Fâbbö'5W&Ä–çWB’°¢6÷•W&Ä'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢ö'5W&Ä–çWBç6VÆV7B‚“°¢Fö7VÖVçBæW†V46öÖÖæB‚v6÷’r“°¢6÷•W&Ä'FâçFW‡D6öçFVçBÒ|*6÷–Fòs°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²6÷•W&Ä'FâçFW‡D6öçFVçBÒt6÷–"U$Âs²ÒÂ#“°¢Ò“°§Ð  ¦Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ†R’°¢6öç7B'FâÒRçF&vWBæ6Æ÷6W7B‚ræ'Fâ×6–Òr“°¢–b†'Fâ’°¢6öç7Bv–gDæÖRÒ'FâævWDGG&–'WFR‚vFFÖv–gBr“°¢6öç7B6ö–ç2Ò'6T–çB†'FâævWDGG&–'WFR‚vFFÖ6ö–ç2r’Â’ÇÂ°¢–b†v–gDæÖR’°¢v–æF÷rç6–×VÆFTv–gB†v–gDæÖRÂ6ö–ç2Â“°¢Ð¢Ð§Ò“°

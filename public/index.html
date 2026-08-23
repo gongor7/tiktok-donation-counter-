@@ -1,69 +1,98 @@
-<!DOCTYPE html>
-<html lang="es">
+ï»¿<!DOCTYPE html>
+<html lang=es>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset=UTF-8>
+    <meta name=viewport content=width=device-width, initial-scale=1.0>
     <title>Dashboard - Contador de Donaciones TikTok Live</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel=stylesheet href=css/dashboard.css>
+    <link href=https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap rel=stylesheet>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class=dashboard-container>
         <header>
-            <h1>ğŸ« TikTok Live Donation Counter</h1>
-            <p class="subtitle">Panel de Control & SimulaciÃ³n para Streamers</p>
+            <h1>ğŸµ TikTok Live Donation Counter</h1>
+            <p class=subtitle>Panel de Control & SimulaciÃ³n para Streamers</p>
         </header>
 
-
-        <main class="grid-layout">
-            <section class="card connection-card">
+        <main class=grid-layout>
+            <!-- Tarjeta de ConexiÃ³n -->
+            <section class=card connection-card>
                 <h2>ConexiÃ³n a TikTok</h2>
-                <div class="input-group">
-                    <span class="prefix">@</span>
-                    <input type="text" id="usernameInput" placeholder="tu_usuario_de_tiktok">
-                    <button id="connectBtn" class="btn btn-primary">Conectar</button>
-                    <button id="disconnectBtn" class="btn btn-danger hidden">Desconectar</button>
+                <div class=input-group>
+                    <span class=prefix>@</span>
+                    <input type=text id=usernameInput placeholder=tu_usuario_de_tiktok>
+                    <button id=connectBtn class=btn btn-primary>Conectar</button>
+                    <button id=disconnectBtn class=btn btn-danger hidden>Desconectar</button>
                 </div>
-                <div class="input-group" style="margin-top: 8px;">
-                    <input type="password" id="apiKeyInput" placeholder="EulerStream API Key (opcional, gratis en eulerstream.com)">
+                
+                <div class=api-key-box>
+                    <input type=password id=apiKeyInput placeholder=EulerStream API Key (Opcional para firmar)>
                 </div>
-                <div id="statusBadge" class="badge status-disconnected">Desconectado</div>
-                <p id="statusMsg" class="status-msg"></p>
+
+                <div class=status-wrapper>
+                    <div id=statusBadge class=badge status-disconnected>Desconectado</div>
+                </div>
+                <p id=statusMsg class=status-msg></p>
             </section>
 
-            <section class="card goal-card">
+            <!-- Tarjeta de Meta -->
+            <section class=card goal-card>
                 <h2>ConfiguraciÃ³n de Meta</h2>
-                <div class="goal-display">
-                    <div class="stat-box">
-                        <span class="label">Monedas Acumuladas</span>
-                        <span id="currentCoins" class="stat-val highlight">0</span>
+                <div class=goal-display>
+                    <div class=stat-box>
+                        <span class=label>Monedas Acumuladas</span>
+                        <span id=currentCoins class=stat-val highlight>0</span>
                     </div>
-                    <div class="stat-box">
-                        <span class="label">Meta Actual</span>
-                        <span id="currentGoal" class="stat-val">1000</span>
+                    <div class=stat-box>
+                        <span class=label>Meta Actual</span>
+                        <span id=currentGoal class=stat-val>1000</span>
                     </div>
                 </div>
 
-
-                <div class="input-group">
-                    <input type="number" id="goalInput" placeholder="Nueva Meta (ej: 2000)" min="1">
-                    <button id="setGoalBtn" class="btn btn-secondary">Actualizar Meta</button>
+                <div class=input-group>
+                    <input type=number id=goalInput placeholder=Nueva Meta (ej: 2000) min=1>
+                    <button id=setGoalBtn class=btn btn-secondary>Actualizar Meta</button>
                 </div>
 
-
-                <button id="resetCounterBtn" class="btn btn-warning">Resetear Contador a 0</button>
+                <button id=resetCounterBtn class=btn btn-warning>Resetear Contador a 0</button>
             </section>
 
-
-            <section class="card obs-card">
+            <!-- Tarjeta OBS URL -->
+            <section class=card obs-card>
                 <h2>Enlace de Overlay para OBS Studio</h2>
-                <p class="hint">Copia esta URL y agrÃ©gala en OBS como fuente Browser Source:</p>
-                <div class="copy-box">
-                    <input type="text" id="obsUrlInput" readonly value="http://localhost:3000/overlay.html">
-                    <button id="copyUrlBtn" class="btn btn-accent">Copiar URL</button>
+                <p class=hint>Copia esta URL y agrÃ©gala en OBS como fuente Navegador (Browser Source):</p>
+                <div class=copy-box>
+                    <input type=text id=obsUrlInput readonly value=http://localhost:3000/overlay.html>
+                    <button id=copyUrlBtn class=btn btn-accent>Copiar URL</button>
                 </div>
             </section>
 
+            <!-- Tarjeta Simulador -->
+            <section class=card simulation-card>
+                <h2>ğŸ§ª Simulador de Regalos (Pruebas)</h2>
+                <p class=hint>Haz clic en cualquier regalo para probar la barra y el overlay sin estar en vivo:</p>
+                <div class=sim-buttons>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Rosa', 1)>ğŸŒ¹ Rosa (+1)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Finger Heart', 5)>ğŸ«° CorazÃ³n (+5)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('TikTok', 10)>ğŸµ TikTok (+10)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Doughnut', 30)>ğŸ© Dona (+30)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Cap', 99)>ğŸ§¢ Gorra (+99)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Perfume', 200)>ğŸ§´ Perfume (+200)</button>
+                    <button type=button class=btn btn-sim onclick=simulateGift('Leon', 1000)>ğŸ¦ LeÃ³n (+1000)</button>
+                </div>
+            </section>
 
-            <section class="card simulation-card">
-                <h2>ğŸ¤© Simulador de Regalos (PZ²'V&2“Âöƒ#à¢Ç6Æ73Ò&†–çB#åW6W7F÷2&÷FöæW2&&ö&"Æ2æ–Ö6–öæW2FVÂ6öçFF÷"6–âW7F"Vâf—fòãÂ÷à¢ÆF—b6Æ73Ò'6–ÒÖ'WGFöç2#à¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%&÷6"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚u&÷6rÂ’#ï	øÛ’&÷6‚³“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$f–ævW"†V'B"FFÖ6ö–ç3Ò#R"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tf–ævW"†V'BrÂR’#ï	úJ¾ûò6÷&¬;6â‚³R“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%F–µFö²"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚uF–µFö²rÂ’#ï	øê²F–µFö²‚³“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$F÷Vv†çWB"FFÖ6ö–ç3Ò#3"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tF÷Vv†çWBrÂ3’#ï	øÚ’Föæ‚³3“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$6"FFÖ6ö–ç3Ò#“’"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚t6rÂ“’’#ï	ú:"v÷'&‚³“’“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%W&gVÖR"FFÖ6ö–ç3Ò##"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚uW&gVÖRrÂ#’#ï	úkBW&gVÖR‚³#“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$ÆVöâ"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tÆVöârÂ’#ï	øÚÆ\;6â‚³“Âö'WGFöãà¢ÂöF—cà¢Â÷6V7F–öãà  ¢Ç6V7F–öâ6Æ73Ò&6&B†—7F÷'’Ö6&BgVÆÂ×v–GF‚#à¢Æƒ#ì9¥¦ÇF–Ö2Föæ6–öæW2&V6–&–F3Âöƒ#à¢ÇVÂ–CÒ&v–gG4Æör"6Æ73Ò&v–gG2ÖÆör#à¢ÆÆ’6Æ73Ò&V×G’#äæò†’Föæ6–öæW2&V6–&–F2;¦âãÂöÆ“à¢Â÷VÃà¢Â÷6V7F–öãà¢ÂöÖ–ãà¢ÂöF—cà  ¢Ç67&—B7&3Ò"÷6ö6¶WBæ–ò÷6ö6¶WBæ–òæ§2#ãÂ÷67&—Cà¢Ç67&—B7&3Ò&§2öF6†&ö&Bæ§2#ãÂ÷67&—Cà£Âö&öG“à£Âö‡FÖÃ
+            <!-- Historial de Donaciones -->
+            <section class=card history-card full-width>
+                <h2>Ãšltimas Donaciones Recibidas</h2>
+                <ul id=giftsLog class=gifts-log>
+                    <li class=empty>No hay donaciones recibidas aÃºn.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src=/socket.io/socket.io.js></script>
+    <script src=js/dashboard.js></script>
+</body>
+</html>
