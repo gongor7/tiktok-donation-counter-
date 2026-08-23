@@ -24,6 +24,9 @@
                     <button id="connectBtn" class="btn btn-primary">Conectar</button>
                     <button id="disconnectBtn" class="btn btn-danger hidden">Desconectar</button>
                 </div>
+                <div class="input-group" style="margin-top: 8px;">
+                    <input type="password" id="apiKeyInput" placeholder="EulerStream API Key (opcional, gratis en eulerstream.com)">
+                </div>
                 <div id="statusBadge" class="badge status-disconnected">Desconectado</div>
                 <p id="statusMsg" class="status-msg"></p>
             </section>
@@ -47,6 +50,7 @@
                     <button id="setGoalBtn" class="btn btn-secondary">Actualizar Meta</button>
                 </div>
 
+
                 <button id="resetCounterBtn" class="btn btn-warning">Resetear Contador a 0</button>
             </section>
 
@@ -62,31 +66,4 @@
 
 
             <section class="card simulation-card">
-                <h2>ðŸ¤… Simulador de Regalos (Pruebas)</h2>
-                <p class="hint">Usa estos botones para probar las animaciones del contador sin estar en vivo.</p>
-                <div class="sim-buttons">
-                    <button type="button" class="btn btn-sim" data-gift="Rosa" data-coins="1" onclick="window.simulateGift('Rosa', 1)">ðŸ¹ Rosa (+1)</button>
-                    <button type="button" class="btn btn-sim" data-gift="Finger Heart" data-coins="5" onclick="window.simulateGift('Finger Heart', 5)">ðŸ¤«Ç¿ CorazÃ³n (+5)</button>
-                    <button type="button" class="btn btn-sim" data-gift="TikTok" data-coins="10" onclick="window.simulateGift('TikTok', 10)">ðŸŽ« TikTok (+10)</button>
-                    <button type="button" class="btn btn-sim" data-gift="Doughnut" data-coins="30" onclick="window.simulateGift('Doughnut', 30)">ðŸ© Dona (+30)</button>
-                    <button type="button" class="btn btn-sim" data-gift="Cap" data-coins="99" onclick="window.simulateGift('Cap', 99)">ðŸ£¢ Gorra (+99)</button>
-                    <button type="button" class="btn btn-sim" data-gift="Perfume" data-coins="200" onclick="window.simulateGift('Perfume', 200)">ðŸ¦´ Perfume (+200)</button>
-                    <button type="button" class="btn btn-sim" data-gift="Leon" data-coins="1000" onclick="window.simulateGift('Leon', 1000)">ðŸ  LeÃ³n (+1000)</button>
-                </div>
-            </section>
-
-
-            <section class="card history-card full-width">
-                <h2>ÃšZltimas Donaciones Recibidas</h2>
-                <ul id="giftsLog" class="gifts-log">
-                    <li class="empty">No hay donaciones recibidas aÃºn.</li>
-                </ul>
-            </section>
-        </main>
-    </div>
-
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/dashboard.js"></script>
-</body>
-</html>
+                <h2>ðŸ¤© Simulador de Regalos (PZ²'V&2“Âöƒ#à¢Ç6Æ73Ò&†–çB#åW6W7F÷2&÷FöæW2&&ö&"Æ2æ–Ö6–öæW2FVÂ6öçFF÷"6–âW7F"Vâf—fòãÂ÷à¢ÆF—b6Æ73Ò'6–ÒÖ'WGFöç2#à¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%&÷6"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚u&÷6rÂ’#ï	øÛ’&÷6‚³“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$f–ævW"†V'B"FFÖ6ö–ç3Ò#R"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tf–ævW"†V'BrÂR’#ï	úJ¾ûò6÷&¬;6â‚³R“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%F–µFö²"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚uF–µFö²rÂ’#ï	øê²F–µFö²‚³“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$F÷Vv†çWB"FFÖ6ö–ç3Ò#3"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tF÷Vv†çWBrÂ3’#ï	øÚ’Föæ‚³3“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$6"FFÖ6ö–ç3Ò#“’"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚t6rÂ“’’#ï	ú:"v÷'&‚³“’“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ%W&gVÖR"FFÖ6ö–ç3Ò##"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚uW&gVÖRrÂ#’#ï	úkBW&gVÖR‚³#“Âö'WGFöãà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ73Ò&'Fâ'Fâ×6–Ò"FFÖv–gCÒ$ÆVöâ"FFÖ6ö–ç3Ò#"öæ6Æ–6³Ò'v–æF÷rç6–×VÆFTv–gB‚tÆVöârÂ’#ï	øÚÆ\;6â‚³“Âö'WGFöãà¢ÂöF—cà¢Â÷6V7F–öãà  ¢Ç6V7F–öâ6Æ73Ò&6&B†—7F÷'’Ö6&BgVÆÂ×v–GF‚#à¢Æƒ#ì9¥¦ÇF–Ö2Föæ6–öæW2&V6–&–F3Âöƒ#à¢ÇVÂ–CÒ&v–gG4Æör"6Æ73Ò&v–gG2ÖÆör#à¢ÆÆ’6Æ73Ò&V×G’#äæò†’Föæ6–öæW2&V6–&–F2;¦âãÂöÆ“à¢Â÷VÃà¢Â÷6V7F–öãà¢ÂöÖ–ãà¢ÂöF—cà  ¢Ç67&—B7&3Ò"÷6ö6¶WBæ–ò÷6ö6¶WBæ–òæ§2#ãÂ÷67&—Cà¢Ç67&—B7&3Ò&§2öF6†&ö&Bæ§2#ãÂ÷67&—Cà£Âö&öG“à£Âö‡FÖÃ

@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { WebcastPushConnection } = require('tiktok-live-connector');
+const { TikTokLiveConnection, SignConfig } = require('tiktok-live-connector');
 
 const app = express();
 const server = http.createServer(app);
@@ -12,33 +12,45 @@ app.use(express.static('public'));
 
 let tiktokConnection = null;
 let currentUsername = '';
+let currentApiKey = process.env.EULER_API_KEY || '';
 let currentGoal = 1000;
 let currentCoins = 0;
 let recentGifts = [];
 
 io.on('connection', (socket) => {
-    console.log('Nuevo cliente WebSocket conectado:', socket.id);
-
     socket.emit('stateUpdate', {
         connected: !!tiktokConnection && tiktokConnection.isConnected,
         username: currentUsername,
+        apiKey: currentApiKey,
         goal: currentGoal,
         coins: currentCoins,
         recentGifts: recentGifts
     });
 
-    socket.on('connectTikTok', (username) => {
+    socket.on('connectTikTok', (data) => {
+        let username = typeof data === 'string' ? data : (data && data.username);
+        let apiKey = data && data.apiKey ? data.apiKey.trim() : currentApiKey;
+
         if (!username || username.trim() === '') return;
 
         username = username.trim().replace('@', '');
         currentUsername = username;
+        if (apiKey) currentApiKey = apiKey;
 
         if (tiktokConnection) {
             try { tiktokConnection.disconnect(); } catch (e) {}
+            tiktokConnection = null;
+        }
+
+        if (apiKey) {
+            SignConfig.apiKey = apiKey;
         }
 
         console.log('Intentando conectar a la transmision LIVE de @' + username + '...');
-        tiktokConnection = new WebcastPushConnection(username);
+        tiktokConnection = new TikTokLiveConnection(username, {
+            processInitialData: true,
+            enableExtendedGiftInfo: true
+        });
 
         tiktokConnection.connect()
             .then(state => {
@@ -54,7 +66,7 @@ io.on('connection', (socket) => {
                 io.emit('connectionStatus', {
                     connected: false,
                     username: username,
-                    error: err.message || 'No se pudo conectar. Verifica que el usuario este transmitiendo EN VIVO en TikTok.'
+                    error: err.message || 'No se pudo conectar. Verifica que el usuario este transmitiendo EN VIVO.'
                 });
             });
 
@@ -68,10 +80,10 @@ io.on('connection', (socket) => {
 
             const giftInfo = {
                 id: Date.now(),
-                uniqueId: data.uniqueId,
-                nickname: data.nickname || data.uniqueId,
-                profilePictureUrl: data.profilePictureUrl || '',
-                giftName: data.giftName || 'Regalo',
+                uniqueId: data.uniqueId || (data.user && data.user.uniqueId) || 'Anonimo',
+                nickname: data.nickname || (data.user && data.user.nickname) || data.uniqueId || 'Donador',
+                profilePictureUrl: data.profilePictureUrl || (data.user && data.user.profilePictureUrl) || '',
+                giftName: data.giftName || (data.giftDetails && data.giftDetails.giftName) || 'Regalo',
                 giftIcon: data.giftPictureUrl || '',
                 giftCount: giftCount,
                 coins: coinValue,
