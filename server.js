@@ -146,11 +146,27 @@ io.on('connection', (socket) => {
             console.log('💬 [CHAT LIVE]:', nick, '(@' + handle + '):', comment);
             io.emit('chatMessage', chatObj);
 
-            // Trigger especial cuando mencionan a "Alelí"
+            // Detección de palabras clave
             const lower = comment.toLowerCase();
             if (lower.includes('aleli') || lower.includes('alelí')) {
-                console.log('🌸 [TRIGGER ALELÍ DETECTADO]:', nick, 'dijo:', comment);
+                console.log('🌸 [TRIGGER ALELÍ DETECTADO]:', nick);
                 io.emit('keywordAlert', {
+                    type: 'aleli',
+                    tag: '🌸 ¡HOLA! 🌸',
+                    title: '¡Hola ' + nick + '! 🌸🐰💖',
+                    message: '¡Gracias por saludar a Alelí! ✨',
+                    nickname: nick,
+                    uniqueId: handle,
+                    comment: comment,
+                    timestamp: chatObj.timestamp
+                });
+            } else if (lower.includes('prueba') || lower.includes('test')) {
+                console.log('🧪 [TRIGGER PRUEBA DETECTADO]:', nick);
+                io.emit('keywordAlert', {
+                    type: 'prueba',
+                    tag: '🧪 ¡PRUEBA EXITOSA! 🧪',
+                    title: '¡Hiciste la prueba ' + nick + '! ✨🎉',
+                    message: '¡El sistema de chat en vivo funciona perfecto! 💖',
                     nickname: nick,
                     uniqueId: handle,
                     comment: comment,
@@ -259,13 +275,30 @@ io.on('connection', (socket) => {
         console.log('🧪 [SIMULACION CHAT]:', nick, ':', comment);
         io.emit('chatMessage', chatObj);
 
-        // Trigger Alelí alert
-        io.emit('keywordAlert', {
-            nickname: nick,
-            uniqueId: handle,
-            comment: comment,
-            timestamp: chatObj.timestamp
-        });
+        const lower = comment.toLowerCase();
+        if (lower.includes('aleli') || lower.includes('alelí')) {
+            io.emit('keywordAlert', {
+                type: 'aleli',
+                tag: '🌸 ¡HOLA! 🌸',
+                title: '¡Hola ' + nick + '! 🌸🐰💖',
+                message: '¡Gracias por saludar a Alelí! ✨',
+                nickname: nick,
+                uniqueId: handle,
+                comment: comment,
+                timestamp: chatObj.timestamp
+            });
+        } else if (lower.includes('prueba') || lower.includes('test')) {
+            io.emit('keywordAlert', {
+                type: 'prueba',
+                tag: '🧪 ¡PRUEBA EXITOSA! 🧪',
+                title: '¡Hiciste la prueba ' + nick + '! ✨🎉',
+                message: '¡El sistema de chat en vivo funciona perfecto! 💖',
+                nickname: nick,
+                uniqueId: handle,
+                comment: comment,
+                timestamp: chatObj.timestamp
+            });
+        }
     });
 });
 

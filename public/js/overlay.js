@@ -17,8 +17,9 @@ const alertImg = document.getElementById('alert-img');
 
 // Keyword Alert Elements
 const keywordAlert = document.getElementById('keyword-alert');
-const keywordUser = document.getElementById('keyword-user');
-const keywordComment = document.getElementById('keyword-comment');
+const keywordTag = document.getElementById('keyword-tag');
+const keywordTitle = document.getElementById('keyword-title');
+const keywordMsg = document.getElementById('keyword-msg');
 
 let alertTimeout = null;
 let keywordTimeout = null;
@@ -173,8 +174,9 @@ function showSuperBigAlert(gift) {
 function showKeywordAlert(data) {
     if (!keywordAlert) return;
 
-    if (keywordUser) keywordUser.textContent = data.nickname || data.uniqueId || 'Usuario';
-    if (keywordComment) keywordComment.textContent = '\"' + (data.comment || 'Aleli') + '\"';
+    if (keywordTag) keywordTag.textContent = data.tag || '🌸 ¡HOLA! 🌸';
+    if (keywordTitle) keywordTitle.textContent = data.title || ('¡Hola ' + (data.nickname || 'Amigo') + '! 🌸🐰💖');
+    if (keywordMsg) keywordMsg.textContent = data.message || '¡Gracias por participar en el en vivo! ✨';
 
     spawnPetals();
     playCuteChime();
@@ -185,5 +187,5 @@ function showKeywordAlert(data) {
 
     keywordTimeout = setTimeout(function() {
         keywordAlert.classList.add('hidden');
-    }, 5000);
+    }, 5500);
 }

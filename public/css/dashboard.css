@@ -327,10 +327,16 @@ input:focus {
 }
 
 .btn-sim-aleli {
-    grid-column: span 2;
     background: linear-gradient(135deg, #fff0f5, #ffe4e9) !important;
     border-color: #ff4c8e !important;
     color: #ff0055 !important;
+    font-weight: 800 !important;
+}
+
+.btn-sim-prueba {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
+    border-color: #22c55e !important;
+    color: #15803d !important;
     font-weight: 800 !important;
 }
 
