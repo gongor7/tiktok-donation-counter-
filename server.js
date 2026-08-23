@@ -50,6 +50,7 @@ let currentGoal = 1000;
 let currentCoins = 0;
 let recentGifts = [];
 let recentChats = [];
+let ttsEnabled = true;
 
 io.on('connection', (socket) => {
     console.log('⚡ Nuevo cliente WebSocket conectado:', socket.id);
@@ -60,7 +61,14 @@ io.on('connection', (socket) => {
         goal: currentGoal,
         coins: currentCoins,
         recentGifts: recentGifts,
-        recentChats: recentChats
+        recentChats: recentChats,
+        ttsEnabled: ttsEnabled
+    });
+
+    socket.on('toggleVoice', (isEnabled) => {
+        ttsEnabled = Boolean(isEnabled);
+        console.log('🎙️ [CONFIG] Estado de Voz en Vivo TTS:', ttsEnabled ? 'ENCENDIDA' : 'APAGADA');
+        io.emit('ttsToggled', ttsEnabled);
     });
 
     socket.on('connectTikTok', (data) => {

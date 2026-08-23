@@ -25,6 +25,7 @@ const audioUnlockHint = document.getElementById('audio-unlock-hint');
 let alertTimeout = null;
 let keywordTimeout = null;
 let audioUnlocked = false;
+let ttsEnabled = true;
 
 // Web Audio API Chime Synthesizer for OBS
 let audioCtx = null;
@@ -61,7 +62,7 @@ function playCuteChime() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (audioCtx.state === 'suspended') {
+        if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
@@ -90,6 +91,11 @@ function playCuteChime() {
 
 // Reproductor de Voz Femenina Auténtica (Audio Stream del Servidor)
 function playFemaleVoice(audioUrl, fallbackText) {
+    if (!ttsEnabled) {
+        console.log('🔇 Voz desactivada por el switch del panel de control');
+        return;
+    }
+
     unlockAudio();
     const url = audioUrl || ('/api/tts?text=' + encodeURIComponent(fallbackText || 'Hola'));
     
@@ -132,7 +138,15 @@ socket.on('connect', function() {
 
 socket.on('stateUpdate', function(state) {
     console.log('Overlay stateUpdate:', state);
+    if (typeof state.ttsEnabled === 'boolean') {
+        ttsEnabled = state.ttsEnabled;
+    }
     updateGoalUI(state.coins, state.goal, false);
+});
+
+socket.on('ttsToggled', function(isEnabled) {
+    ttsEnabled = Boolean(isEnabled);
+    console.log('🎙️ Estado de voz en Overlay actualizado:', ttsEnabled ? 'ACTIVADA' : 'APAGADA');
 });
 
 socket.on('goalUpdated', function(data) {
@@ -214,7 +228,7 @@ function showSuperBigAlert(gift) {
     spawnPetals();
     playCuteChime();
 
-    // Reproducir voz femenina real
+    // Reproducir voz femenina real si está activada
     playFemaleVoice(gift.audioUrl, '¡Muchísimas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!');
 
     // Show alert
@@ -238,7 +252,7 @@ function showKeywordAlert(data) {
     spawnPetals();
     playCuteChime();
 
-    // Reproducir voz femenina real
+    // Reproducir voz femenina real si está activada
     playFemaleVoice(data.audioUrl, data.voiceText || ('¡Hola ' + user + '! Alelí te manda un abrazo gigante.'));
 
     keywordAlert.classList.remove('hidden');

@@ -16,6 +16,10 @@ const obsUrlInput = document.getElementById('obsUrlInput');
 const giftsLog = document.getElementById('giftsLog');
 const chatLog = document.getElementById('chatLog');
 
+// Switch TTS Elements
+const ttsToggle = document.getElementById('ttsToggle');
+const ttsStatusText = document.getElementById('ttsStatusText');
+
 window.simulateGift = function(giftName, coins, count) {
     count = count || 1;
     coins = parseInt(coins, 10) || 1;
@@ -38,17 +42,50 @@ window.simulateComment = function(commentText) {
     });
 };
 
+// Toggle Switch Listener
+if (ttsToggle) {
+    ttsToggle.addEventListener('change', function() {
+        const isEnabled = ttsToggle.checked;
+        updateTTSUI(isEnabled);
+        socket.emit('toggleVoice', isEnabled);
+    });
+}
+
+function updateTTSUI(isEnabled) {
+    if (!ttsStatusText) return;
+    if (isEnabled) {
+        ttsStatusText.textContent = '🔊 Voz Activada';
+        ttsStatusText.style.color = 'var(--accent-rose)';
+    } else {
+        ttsStatusText.textContent = '🔇 Voz Apagada';
+        ttsStatusText.style.color = '#94a3b8';
+    }
+}
+
 socket.on('stateUpdate', function(state) {
     if (currentCoinsEl) currentCoinsEl.textContent = state.coins;
     if (currentGoalEl) currentGoalEl.textContent = state.goal;
     if (state.username && usernameInput) usernameInput.value = state.username;
     updateStatusBadge(state.connected, state.username);
+    
+    if (ttsToggle && typeof state.ttsEnabled === 'boolean') {
+        ttsToggle.checked = state.ttsEnabled;
+        updateTTSUI(state.ttsEnabled);
+    }
+
     if (state.recentGifts && state.recentGifts.length > 0) {
         renderGiftsLog(state.recentGifts);
     }
     if (state.recentChats && state.recentChats.length > 0) {
         renderChatLog(state.recentChats);
     }
+});
+
+socket.on('ttsToggled', function(isEnabled) {
+    if (ttsToggle) {
+        ttsToggle.checked = isEnabled;
+    }
+    updateTTSUI(isEnabled);
 });
 
 if (connectBtn) {
