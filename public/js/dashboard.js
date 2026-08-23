@@ -2,7 +2,6 @@ const socket = io();
 
 
 const usernameInput = document.getElementById('usernameInput');
-const apiKeyInput = document.getElementById('apiKeyInput');
 const connectBtn = document.getElementById('connectBtn');
 const disconnectBtn = document.getElementById('disconnectBtn');
 const statusBadge = document.getElementById('statusBadge');
@@ -32,7 +31,6 @@ socket.on('stateUpdate', function(state) {
     if (currentCoinsEl) currentCoinsEl.textContent = state.coins;
     if (currentGoalEl) currentGoalEl.textContent = state.goal;
     if (state.username && usernameInput) usernameInput.value = state.username;
-    if (state.apiKey && apiKeyInput) apiKeyInput.value = state.apiKey;
     updateStatusBadge(state.connected, state.username);
     if (state.recentGifts && state.recentGifts.length > 0) {
         renderGiftsLog(state.recentGifts);
@@ -42,14 +40,13 @@ socket.on('stateUpdate', function(state) {
 if (connectBtn) {
     connectBtn.addEventListener('click', function() {
         const username = usernameInput ? usernameInput.value.trim() : '';
-        const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
         if (!username) return alert('Por favor, ingresa un usuario de TikTok');
         if (statusBadge) {
             statusBadge.className = 'badge status-connecting';
-            statusBadge.textContent = 'Conectando...';
+            statusBadge.textContent = 'â¦¬ Conectando...';
         }
         if (statusMsg) statusMsg.textContent = 'Intentando conectar con @' + username + '...';
-        socket.emit('connectTikTok', { username: username, apiKey: apiKey });
+        socket.emit('connectTikTok', { username: username });
     });
 }
 
@@ -58,6 +55,7 @@ if (disconnectBtn) {
         socket.emit('disconnectTikTok');
     });
 }
+
 
 socket.on('connectionStatus', function(data) {
     updateStatusBadge(data.connected, data.username);
@@ -70,16 +68,17 @@ function updateStatusBadge(connected, username) {
     if (!statusBadge) return;
     if (connected) {
         statusBadge.className = 'badge status-connected';
-        statusBadge.textContent = 'Conectado (@' + username + ')';
+        statusBadge.textContent = 'ğŸ§¡ Conectado (@' + username + ')';
         if (connectBtn) connectBtn.classList.add('hidden');
         if (disconnectBtn) disconnectBtn.classList.remove('hidden');
     } else {
         statusBadge.className = 'badge status-disconnected';
-        statusBadge.textContent = 'Desconectado';
+        statusBadge.textContent = 'âšª Desconectado';
         if (connectBtn) connectBtn.classList.remove('hidden');
         if (disconnectBtn) disconnectBtn.classList.add('hidden');
     }
 }
+
 
 if (setGoalBtn) {
     setGoalBtn.addEventListener('click', function() {
@@ -91,21 +90,24 @@ if (setGoalBtn) {
     });
 }
 
+
 socket.on('goalUpdated', function(data) {
     if (currentGoalEl) currentGoalEl.textContent = data.goal;
-}
+});
+
 
 if (resetCounterBtn) {
     resetCounterBtn.addEventListener('click', function() {
-        if (confirm('Â°EstÃ¡s seguro de que quieres poner el contador a 0?')) {
+        if (confirm('Â¿EstÃ¡s seguro de que quieres poner el contador a 0?')) {
             socket.emit('resetCounter');
         }
     });
 }
+
 socket.on('counterReset', function(data) {
     if (currentCoinsEl) currentCoinsEl.textContent = data.coins;
-    if (giftsLog) giftsLog.innerHTML = '<[I class="empty">No hay donaciones recibidas a</li>';
-    if (giftsLog) giftsLog.innerHTML = '<li class="empty">No hay donaciones recibidas aÃºn.</li>';
+    if (giftsLog) giftsLog.innerHTML = '<[I class="empty">AÃºn no se han recibido regalos en esta sesiÃ³n ğŸŒ¸</li>';
+    if (giftsLog) giftsLog.innerHTML = '<li class="empty">AÃºn no se han recibido regalos en esta sesiÃ³n ğŸŒ¸</li>';
 });
 
 socket.on('giftReceived', function(data) {
@@ -120,8 +122,8 @@ function addGiftToLog(gift) {
     if (emptyMsg) emptyMsg.remove();
 
     const li = document.createElement('li');
-    li.innerHTML = '<span><strong>' + escapeHtml(gift.nickname) + '</strong> (@' + escapeHtml(gift.uniqueId) + ') enviÃ³ <strong>' + gift.giftCount + 'x ' + escapeHtml(gift.giftName) + '</strong></span>' +
-        '<span style="color: #fbbf24; font-weight: bold;">+' + gift.coins + ' ğŸµ <small style="color: #94a3b8;">(' + gift.timestamp + ')</small></span>';
+    li.innerHTML = '<span><strong style="color: #ff4c8e;">' + escapeHtml(gift.nickname) + '</strong> (@' + escapeHtml(gift.uniqueId) + ') enviÃ³ <strong>' + gift.giftCount + 'x ' + escapeHtml(gift.giftName) + '</strong></span>' +
+        '<span style="color: #ff477e; font-weight: 800; background: #fff0f5; padding: 4px 12px; border-radius: 15px; border: 1px solid #ffcde2;">+' + gift.coins + ' ğŸµ <small style="color: #885870; font-weight: 500;">(' + gift.timestamp + ')</small></span>';
     giftsLog.insertBefore(li, giftsLog.firstChild);
 }
 
@@ -134,4 +136,4 @@ function renderGiftsLog(gifts) {
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt9Ë	È‰Îˆ	Éœ][İrÂ"r#¢rb33“²rÕ¶ÕÓ°¢Ò“°§Ğ ¦–b†6÷•W&Ä'Fâbbö'5W&Ä–çWB’°¢6÷•W&Ä'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢ö'5W&Ä–çWBç6VÆV7B‚“°¢Fö7VÖVçBæW†V46öÖÖæB‚v6÷’r“°¢6÷•W&Ä'FâçFW‡D6öçFVçBÒ|*6÷–Fòs°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²6÷•W&Ä'FâçFW‡D6öçFVçBÒt6÷–"U$Âs²ÒÂ#“°¢Ò“°§Ğ  ¦Fö7VÖVçBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ†R’°¢6öç7B'FâÒRçF&vWBæ6Æ÷6W7B‚ræ'Fâ×6–Òr“°¢–b†'Fâ’°¢6öç7Bv–gDæÖRÒ'FâævWDGG&–'WFR‚vFFÖv–gBr“°¢6öç7B6ö–ç2Ò'6T–çB†'FâævWDGG&–'WFR‚vFFÖ6ö–ç2r’Â’ÇÂ°¢–b†v–gDæÖR’°¢v–æF÷rç6–×VÆFTv–gB†v–gDæÖRÂ6ö–ç2Â“°¢Ğ¢Ğ§Ò“°
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt9Ë	È‰Îˆ	Éœ][İrÂ"r#¢rb33“²rÕ¶ÕÓ°¢Ò“°§Ğ  ¦–b†6÷•W&Ä'Fâbbö'5W&Ä–çWB’°¢6÷•W&Ä'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢ö'5W&Ä–çWBç6VÆV7B‚“°¢Fö7VÖVçBæW†V46öÖÖæB‚v6÷’r“°¢6÷•W&Ä'FâçFW‡D6öçFVçBÒ	ù+*6÷–Fòs°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²6÷•W&Ä'FâçFW‡D6öçFVçBÒ	ù8²6÷–"s²ÒÂ#“°¢Ò“°§Ğ 
