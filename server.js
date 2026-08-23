@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const { Server } = require('socket.io');
 const tlc = require('tiktok-live-connector');
 
@@ -22,6 +23,26 @@ const io = new Server(server, { cors: { origin: '*' } });
 
 const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
+
+// Endpoint de Voz de Mujer Dulce en Español
+app.get('/api/tts', (req, res) => {
+    const text = req.query.text || 'Hola';
+    const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
+    const url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=es&q=' + encodeURIComponent(cleanText);
+
+    https.get(url, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+    }, (proxyRes) => {
+        res.setHeader('Content-Type', 'audio/mpeg');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+        proxyRes.pipe(res);
+    }).on('error', (err) => {
+        console.error('Error al generar TTS femenino:', err.message);
+        res.status(500).send('Error');
+    });
+});
 
 let tiktokConnection = null;
 let currentUsername = 'aleli_paz';
@@ -111,6 +132,8 @@ io.on('connection', (socket) => {
                 giftIcon: (data.gift && data.gift.image && data.gift.image.urlList && data.gift.image.urlList[0]) || '',
                 giftCount: giftCount,
                 coins: coinValue,
+                voiceText: '¡Muchísimas gracias ' + nick + ' por enviar ' + giftCount + ' ' + gName + '!',
+                audioUrl: '/api/tts?text=' + encodeURIComponent('¡Muchísimas gracias ' + nick + ' por enviar ' + giftCount + ' ' + gName + '!'),
                 timestamp: new Date().toLocaleTimeString()
             };
 
@@ -149,26 +172,30 @@ io.on('connection', (socket) => {
             // Detección de palabras clave
             const lower = comment.toLowerCase();
             if (lower.includes('aleli') || lower.includes('alelí')) {
+                const voiceMsg = '¡Hola ' + nick + '! Alelí te manda un abrazo gigante.';
                 console.log('🌸 [TRIGGER ALELÍ DETECTADO]:', nick);
                 io.emit('keywordAlert', {
                     type: 'aleli',
                     tag: '🌸 ¡HOLA! 🌸',
                     title: '¡Hola ' + nick + '! 🌸🐰💖',
                     message: '¡Gracias por saludar a Alelí! ✨',
-                    voiceText: '¡Hola ' + nick + '! Alelí te manda un abrazo gigante.',
+                    voiceText: voiceMsg,
+                    audioUrl: '/api/tts?text=' + encodeURIComponent(voiceMsg),
                     nickname: nick,
                     uniqueId: handle,
                     comment: comment,
                     timestamp: chatObj.timestamp
                 });
             } else if (lower.includes('prueba') || lower.includes('test')) {
+                const voiceMsg = '¡Hiciste la prueba ' + nick + '! El chat en vivo funciona perfecto.';
                 console.log('🧪 [TRIGGER PRUEBA DETECTADO]:', nick);
                 io.emit('keywordAlert', {
                     type: 'prueba',
                     tag: '🧪 ¡PRUEBA EXITOSA! 🧪',
                     title: '¡Hiciste la prueba ' + nick + '! ✨🎉',
                     message: '¡El sistema de chat en vivo funciona perfecto! 💖',
-                    voiceText: '¡Hiciste la prueba ' + nick + '! El chat en vivo funciona perfecto.',
+                    voiceText: voiceMsg,
+                    audioUrl: '/api/tts?text=' + encodeURIComponent(voiceMsg),
                     nickname: nick,
                     uniqueId: handle,
                     comment: comment,
@@ -243,6 +270,8 @@ io.on('connection', (socket) => {
             giftIcon: '',
             giftCount: giftCount,
             coins: coinValue,
+            voiceText: '¡Muchísimas gracias ' + (data.nickname || 'Donador de Prueba') + ' por enviar ' + giftCount + ' ' + (data.giftName || 'Rosa') + '!',
+            audioUrl: '/api/tts?text=' + encodeURIComponent('¡Muchísimas gracias ' + (data.nickname || 'Donador de Prueba') + ' por enviar ' + giftCount + ' ' + (data.giftName || 'Rosa') + '!'),
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -279,24 +308,28 @@ io.on('connection', (socket) => {
 
         const lower = comment.toLowerCase();
         if (lower.includes('aleli') || lower.includes('alelí')) {
+            const voiceMsg = '¡Hola ' + nick + '! Alelí te manda un abrazo gigante.';
             io.emit('keywordAlert', {
                 type: 'aleli',
                 tag: '🌸 ¡HOLA! 🌸',
                 title: '¡Hola ' + nick + '! 🌸🐰💖',
                 message: '¡Gracias por saludar a Alelí! ✨',
-                voiceText: '¡Hola ' + nick + '! Alelí te manda un abrazo gigante.',
+                voiceText: voiceMsg,
+                audioUrl: '/api/tts?text=' + encodeURIComponent(voiceMsg),
                 nickname: nick,
                 uniqueId: handle,
                 comment: comment,
                 timestamp: chatObj.timestamp
             });
         } else if (lower.includes('prueba') || lower.includes('test')) {
+            const voiceMsg = '¡Hiciste la prueba ' + nick + '! El chat en vivo funciona perfecto.';
             io.emit('keywordAlert', {
                 type: 'prueba',
                 tag: '🧪 ¡PRUEBA EXITOSA! 🧪',
                 title: '¡Hiciste la prueba ' + nick + '! ✨🎉',
                 message: '¡El sistema de chat en vivo funciona perfecto! 💖',
-                voiceText: '¡Hiciste la prueba ' + nick + '! El chat en vivo funciona perfecto.',
+                voiceText: voiceMsg,
+                audioUrl: '/api/tts?text=' + encodeURIComponent(voiceMsg),
                 nickname: nick,
                 uniqueId: handle,
                 comment: comment,

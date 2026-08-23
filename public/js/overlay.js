@@ -39,19 +39,16 @@ function unlockAudio() {
         if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.resume();
-        }
         if (audioUnlockHint) {
             audioUnlockHint.classList.add('hidden');
         }
-        console.log('🔊 Audio y Voz desbloqueados con éxito');
+        console.log('🔊 Audio desbloqueado con éxito');
     } catch (e) {
         console.warn('Error al desbloquear audio:', e);
     }
 }
 
-// Desbloqueo al hacer clic en cualquier parte de la ventana
+// Desbloqueo al hacer clic en cualquier parte de la pantalla
 window.addEventListener('click', unlockAudio);
 window.addEventListener('keydown', unlockAudio);
 window.addEventListener('touchstart', unlockAudio);
@@ -91,101 +88,22 @@ function playCuteChime() {
     }
 }
 
-// Text-To-Speech (Voz de Mujer Dulce con doble sistema Cloud + Local)
-let availableVoices = [];
-
-function loadVoices() {
-    if ('speechSynthesis' in window) {
-        availableVoices = window.speechSynthesis.getVoices();
-    }
-}
-
-if ('speechSynthesis' in window) {
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-}
-
-function getSweetFemaleVoice() {
-    if (!availableVoices || availableVoices.length === 0) {
-        loadVoices();
-    }
-    const voices = availableVoices || [];
-    if (voices.length === 0) return null;
-
-    const spanishVoices = voices.filter(v => v.lang.startsWith('es') || v.lang.includes('es_') || v.lang.includes('es-'));
-
-    // Lista prioritaria de voces femeninas dulces
-    const preferredFemaleNames = [
-        'sabina', 'paulina', 'helena', 'laura', 'sofia', 'monica', 
-        'penelope', 'lupe', 'mia', 'camila', 'paloma', 'elena', 
-        'lucia', 'valeria', 'google español', 'female', 'mujer', 'zira'
-    ];
-
-    for (const name of preferredFemaleNames) {
-        const found = spanishVoices.find(v => v.name.toLowerCase().includes(name));
-        if (found) return found;
-    }
-
-    const maleNames = ['male', 'hombre', 'raul', 'jorge', 'pablo', 'david', 'enrique', 'carlos', 'mateo'];
-    const nonMaleSpanish = spanishVoices.find(v => !maleNames.some(m => v.name.toLowerCase().includes(m)));
-    if (nonMaleSpanish) return nonMaleSpanish;
-
-    return spanishVoices[0] || voices[0];
-}
-
-function speakFemaleVoice(text) {
-    if (!text) return;
+// Reproductor de Voz Femenina Auténtica (Audio Stream del Servidor)
+function playFemaleVoice(audioUrl, fallbackText) {
     unlockAudio();
-
-    // Limpiar emojis y caracteres especiales para que la voz suene limpia y dulce
-    const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
-    if (!cleanText) return;
-
-    console.log('🎙️ Reproduciendo voz dulce:', cleanText);
-
-    // 1. Intentar voz de chica con Cloud TTS
+    const url = audioUrl || ('/api/tts?text=' + encodeURIComponent(fallbackText || 'Hola'));
+    
+    console.log('🎙️ Reproduciendo voz femenina desde:', url);
     try {
-        const ttsUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=es-ES&client=tw-ob&q=' + encodeURIComponent(cleanText);
-        const cloudAudio = new Audio(ttsUrl);
-        cloudAudio.volume = 1.0;
-
-        const playPromise = cloudAudio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('✅ Voz femenina Cloud reproducida exitosamente');
-            }).catch(err => {
-                console.warn('Cloud TTS restringido por navegador, usando voz local:', err);
-                fallbackLocalSpeech(cleanText);
-            });
-            return;
-        }
+        const audio = new Audio(url);
+        audio.volume = 1.0;
+        audio.play().then(() => {
+            console.log('✅ Voz femenina reproducida con éxito');
+        }).catch(err => {
+            console.warn('Audio play bloqueado por el navegador (requiere un clic):', err);
+        });
     } catch (e) {
-        console.warn('Error en Cloud TTS, cambiando a síntesis local:', e);
-    }
-
-    // 2. Fallback con Web Speech API local
-    fallbackLocalSpeech(cleanText);
-}
-
-function fallbackLocalSpeech(cleanText) {
-    if (!('speechSynthesis' in window)) return;
-    try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = 'es-MX';
-        utterance.rate = 1.05;
-        utterance.pitch = 1.35; // Tono más agudo, dulce y femenino
-        utterance.volume = 1.0;
-
-        const sweetVoice = getSweetFemaleVoice();
-        if (sweetVoice) {
-            utterance.voice = sweetVoice;
-            utterance.lang = sweetVoice.lang;
-        }
-
-        window.speechSynthesis.speak(utterance);
-    } catch (e) {
-        console.error('Error en síntesis local:', e);
+        console.error('Error al reproducir audio:', e);
     }
 }
 
@@ -296,9 +214,8 @@ function showSuperBigAlert(gift) {
     spawnPetals();
     playCuteChime();
 
-    // Lectura con voz de mujer dulce
-    const giftVoice = '¡Muchísimas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!';
-    speakFemaleVoice(giftVoice);
+    // Reproducir voz femenina real
+    playFemaleVoice(gift.audioUrl, '¡Muchísimas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!');
 
     // Show alert
     bigGiftAlert.classList.remove('hidden');
@@ -321,9 +238,8 @@ function showKeywordAlert(data) {
     spawnPetals();
     playCuteChime();
 
-    // LEER EN VOZ ALTA DULCE
-    const voiceMsg = data.voiceText || ('¡Hola ' + user + '! Alelí te manda un abrazo gigante.');
-    speakFemaleVoice(voiceMsg);
+    // Reproducir voz femenina real
+    playFemaleVoice(data.audioUrl, data.voiceText || ('¡Hola ' + user + '! Alelí te manda un abrazo gigante.'));
 
     keywordAlert.classList.remove('hidden');
 
