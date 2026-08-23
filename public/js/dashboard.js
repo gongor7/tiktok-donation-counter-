@@ -1,6 +1,6 @@
 const socket = io();
 
-
+// DOM Elements
 const usernameInput = document.getElementById('usernameInput');
 const connectBtn = document.getElementById('connectBtn');
 const disconnectBtn = document.getElementById('disconnectBtn');
@@ -43,7 +43,7 @@ if (connectBtn) {
         if (!username) return alert('Por favor, ingresa un usuario de TikTok');
         if (statusBadge) {
             statusBadge.className = 'badge status-connecting';
-            statusBadge.textContent = 'â¦¬ Conectando...';
+            statusBadge.textContent = 'Conectando...';
         }
         if (statusMsg) statusMsg.textContent = 'Intentando conectar con @' + username + '...';
         socket.emit('connectTikTok', { username: username });
@@ -56,19 +56,17 @@ if (disconnectBtn) {
     });
 }
 
-
 socket.on('connectionStatus', function(data) {
     updateStatusBadge(data.connected, data.username);
     if (data.message && statusMsg) statusMsg.textContent = data.message;
     if (data.error && statusMsg) statusMsg.textContent = 'Error: ' + data.error;
 });
 
-
 function updateStatusBadge(connected, username) {
     if (!statusBadge) return;
     if (connected) {
         statusBadge.className = 'badge status-connected';
-        statusBadge.textContent = 'ğŸ§¡ Conectado (@' + username + ')';
+        statusBadge.textContent = 'ğŸŸ¢ Conectado (@' + username + ')';
         if (connectBtn) connectBtn.classList.add('hidden');
         if (disconnectBtn) disconnectBtn.classList.remove('hidden');
     } else {
@@ -78,7 +76,6 @@ function updateStatusBadge(connected, username) {
         if (disconnectBtn) disconnectBtn.classList.add('hidden');
     }
 }
-
 
 if (setGoalBtn) {
     setGoalBtn.addEventListener('click', function() {
@@ -90,11 +87,9 @@ if (setGoalBtn) {
     });
 }
 
-
 socket.on('goalUpdated', function(data) {
     if (currentGoalEl) currentGoalEl.textContent = data.goal;
 });
-
 
 if (resetCounterBtn) {
     resetCounterBtn.addEventListener('click', function() {
@@ -106,7 +101,6 @@ if (resetCounterBtn) {
 
 socket.on('counterReset', function(data) {
     if (currentCoinsEl) currentCoinsEl.textContent = data.coins;
-    if (giftsLog) giftsLog.innerHTML = '<[I class="empty">AÃºn no se han recibido regalos en esta sesiÃ³n ğŸŒ¸</li>';
     if (giftsLog) giftsLog.innerHTML = '<li class="empty">AÃºn no se han recibido regalos en esta sesiÃ³n ğŸŒ¸</li>';
 });
 
@@ -115,7 +109,6 @@ socket.on('giftReceived', function(data) {
     addGiftToLog(data.gift);
 });
 
-
 function addGiftToLog(gift) {
     if (!giftsLog) return;
     const emptyMsg = giftsLog.querySelector('.empty');
@@ -123,7 +116,7 @@ function addGiftToLog(gift) {
 
     const li = document.createElement('li');
     li.innerHTML = '<span><strong style="color: #ff4c8e;">' + escapeHtml(gift.nickname) + '</strong> (@' + escapeHtml(gift.uniqueId) + ') enviÃ³ <strong>' + gift.giftCount + 'x ' + escapeHtml(gift.giftName) + '</strong></span>' +
-        '<span style="color: #ff477e; font-weight: 800; background: #fff0f5; padding: 4px 12px; border-radius: 15px; border: 1px solid #ffcde2;">+' + gift.coins + ' ğŸµ <small style="color: #885870; font-weight: 500;">(' + gift.timestamp + ')</small></span>';
+        '<span style="color: #ff477e; font-weight: 800; background: #fff0f5; padding: 4px 12px; border-radius: 15px; border: 1px solid #ffcde2;">+' + gift.coins + ' ğŸª™ <small style="color: #885870; font-weight: 500;">(' + gift.timestamp + ')</small></span>';
     giftsLog.insertBefore(li, giftsLog.firstChild);
 }
 
@@ -135,5 +128,19 @@ function renderGiftsLog(gifts) {
 
 function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt9Ë	È‰Îˆ	Éœ][İrÂ"r#¢rb33“²rÕ¶ÕÓ°¢Ò“°§Ğ  ¦–b†6÷•W&Ä'Fâbbö'5W&Ä–çWB’°¢6÷•W&Ä'FâæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂgVæ7F–öâ‚’°¢ö'5W&Ä–çWBç6VÆV7B‚“°¢Fö7VÖVçBæW†V46öÖÖæB‚v6÷’r“°¢6÷•W&Ä'FâçFW‡D6öçFVçBÒ	ù+*6÷–Fòs°¢6WEF–ÖV÷WB†gVæ7F–öâ‚’²6÷•W&Ä'FâçFW‡D6öçFVçBÒ	ù8²6÷–"s²ÒÂ#“°¢Ò“°§Ğ 
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+if (copyUrlBtn && obsUrlInput) {
+    copyUrlBtn.addEventListener('click', function() {
+        obsUrlInput.select();
+        document.execCommand('copy');
+        copyUrlBtn.textContent = 'Â¡Copiado!';
+        setTimeout(function() { copyUrlBtn.textContent = 'ğŸ“‹ Copiar'; }, 2000);
+    });
+}
