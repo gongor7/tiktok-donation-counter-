@@ -59,7 +59,7 @@ function playCuteChime() {
     }
 }
 
-// Text-To-Speech (Voz Alta TTS)
+// Text-To-Speech (Voz de Mujer Dulce)
 let availableVoices = [];
 
 function loadVoices() {
@@ -73,39 +73,54 @@ if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = loadVoices;
 }
 
+function getSweetFemaleVoice() {
+    if (!availableVoices || availableVoices.length === 0) {
+        loadVoices();
+    }
+    const voices = availableVoices || [];
+    if (voices.length === 0) return null;
+
+    const spanishVoices = voices.filter(v => v.lang.startsWith('es') || v.lang.includes('es_') || v.lang.includes('es-'));
+
+    // Lista prioritaria de voces femeninas dulces en español
+    const preferredFemaleNames = [
+        'sabina', 'paulina', 'helena', 'laura', 'sofia', 'monica', 
+        'penelope', 'lupe', 'mia', 'camila', 'paloma', 'elena', 
+        'lucia', 'valeria', 'google español', 'female', 'mujer', 'zira'
+    ];
+
+    for (const name of preferredFemaleNames) {
+        const found = spanishVoices.find(v => v.name.toLowerCase().includes(name));
+        if (found) return found;
+    }
+
+    // Si no encuentra por nombre específico, evitar voces masculinas conocidas
+    const maleNames = ['male', 'hombre', 'raul', 'jorge', 'pablo', 'david', 'enrique', 'carlos', 'mateo'];
+    const nonMaleSpanish = spanishVoices.find(v => !maleNames.some(m => v.name.toLowerCase().includes(m)));
+    if (nonMaleSpanish) return nonMaleSpanish;
+
+    return spanishVoices[0] || voices[0];
+}
+
 function speakText(text) {
     if (!('speechSynthesis' in window) || !text) return;
     try {
-        window.speechSynthesis.cancel(); // Cancelar lecturas anteriores para evitar retrasos
+        window.speechSynthesis.cancel(); // Cancelar lecturas anteriores para evitar saturación
 
-        // Limpiar emojis y símbolos raros para que la voz suene limpia y natural
+        // Limpiar emojis y caracteres especiales para que la voz suene limpia y dulce
         const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
         if (!cleanText) return;
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = 'es-ES';
-        utterance.rate = 1.0;   // Velocidad natural
-        utterance.pitch = 1.15; // Tono alegre y dulce
+        utterance.lang = 'es-MX'; // Español latino cálido
+        utterance.rate = 1.05;    // Ritmo alegre y fluido
+        utterance.pitch = 1.35;   // Tono más agudo, dulce y femenino
+        utterance.volume = 1.0;
 
-        if (!availableVoices || availableVoices.length === 0) {
-            loadVoices();
-        }
-
-        // Buscar una voz femenina / dulce en español si está disponible
-        const spanishVoice = availableVoices.find(v => v.lang.startsWith('es') && (
-            v.name.includes('Female') || 
-            v.name.includes('Sabina') || 
-            v.name.includes('Helena') || 
-            v.name.includes('Laura') || 
-            v.name.includes('Paulina') || 
-            v.name.includes('Monica') || 
-            v.name.includes('Sofia') || 
-            v.name.includes('Google') ||
-            v.name.includes('Microsoft')
-        )) || availableVoices.find(v => v.lang.startsWith('es'));
-
-        if (spanishVoice) {
-            utterance.voice = spanishVoice;
+        const sweetVoice = getSweetFemaleVoice();
+        if (sweetVoice) {
+            utterance.voice = sweetVoice;
+            utterance.lang = sweetVoice.lang;
         }
 
         window.speechSynthesis.speak(utterance);
@@ -221,8 +236,8 @@ function showSuperBigAlert(gift) {
     spawnPetals();
     playCuteChime();
 
-    // Lectura en voz alta de donación
-    const giftVoice = '¡Muchas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!';
+    // Lectura con voz de mujer dulce
+    const giftVoice = '¡Muchísimas gracias ' + donorName + ' por enviar ' + giftCount + ' ' + giftName + '!';
     speakText(giftVoice);
 
     // Show alert
@@ -246,7 +261,7 @@ function showKeywordAlert(data) {
     spawnPetals();
     playCuteChime();
 
-    // LEER EN VOZ ALTA (TTS)
+    // LEER EN VOZ ALTA DULCE (TTS)
     const voiceMsg = data.voiceText || ('¡Hola ' + user + '! Alelí te manda un abrazo gigante.');
     speakText(voiceMsg);
 
